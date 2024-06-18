@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import apiClient from '../api/apiClient';
 
 const useFetchData = (endpoint) => {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!endpoint) return;
+
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await apiClient.get(endpoint);
         setData(response.data);
