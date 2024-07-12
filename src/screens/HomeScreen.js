@@ -1,23 +1,13 @@
-import React from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import useFetchData from '../hooks/useFetchData';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { useTheme } from "../context/ThemeContext";
 
 const HomeScreen = () => {
-  const { data, loading, error } = useFetchData('/match-history/f9pT-PPe4XdUkewvFHUosFOmzpsFYjs0_2VQB9VB5w3-LAKw6o6ZsrFKvidNIPYshnBmPccKPTCOhQ');
-
-  if (loading) return <ActivityIndicator size="large" />;
-  if (error) return <Text style={styles.errorText}>Error: {error.message}</Text>;
+  const { isDarkTheme } = useTheme();
 
   return (
-    <View style={styles.container}>
-      <Text>Match History:</Text>
-      {data ? (
-        data.map((matchId, index) => (
-          <Text key={index}>{matchId}</Text>
-        ))
-      ) : (
-        <Text>No Match Data</Text>
-      )}
+    <View style={[styles.container, isDarkTheme ? styles.dark : styles.light]}>
+      <Text style={styles.text}>Home Screen</Text>
     </View>
   );
 };
@@ -25,12 +15,17 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  errorText: {
-    color: 'red',
+  dark: {
+    backgroundColor: "#242222",
+  },
+  light: {
+    backgroundColor: "#f5f5f5",
+  },
+  text: {
+    color: "#000",
   },
 });
 

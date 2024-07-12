@@ -8,12 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* MyAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MyAppTests.m */; };
+		01AAF4367CECEA7A38FF6599 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6184FA2BBB2013E9C946D123 /* PrivacyInfo.xcprivacy */; };
 		0C80B921A6F3F58F76C31292 /* libPods-MyApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-MyApp.a */; };
+		0FDA91CA046F4A888C59E58D /* BeaufortforLOL-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4E2BD0CC3544ED19C27231F /* BeaufortforLOL-Medium.ttf */; };
+		129E026CBE9B4CE38FB0DBB6 /* BeaufortforLOL-HeavyItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A31E3E3751F34E45A87BABD9 /* BeaufortforLOL-HeavyItalic.ttf */; };
+		1335E7D03C884D11A5FDDAEB /* Spiegel_TT_SemiBold_Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3C641A8A7E8543F59E0EF00B /* Spiegel_TT_SemiBold_Italic.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		29723AB6C3A04179B1983AE4 /* BeaufortforLOL-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C98C5154134406CA721A8D6 /* BeaufortforLOL-BoldItalic.ttf */; };
+		2FE8FF89D28D43BAB2FF9090 /* Spiegel_TT_Regular_Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99A5D90F386F4269A11408C6 /* Spiegel_TT_Regular_Italic.ttf */; };
+		3BA02A7CC72C436088CC04F8 /* BeaufortforLOL-BoldItalic(1).ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7DE9E827B3F94D40B5E90E83 /* BeaufortforLOL-BoldItalic(1).ttf */; };
+		5DE6F2CE0A974D9CA9B66973 /* Spiegel_TT_SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC375AE1FCCB44ECA2172BB4 /* Spiegel_TT_SemiBold.ttf */; };
+		635AE4B1CE1242C391BFBCA0 /* BeaufortforLOL-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6773EE76366F460A8C020DA6 /* BeaufortforLOL-LightItalic.ttf */; };
+		6F34BE7B62C748398E617AF7 /* BeaufortforLOL-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD99F46AA5C74FA5ADBEADB7 /* BeaufortforLOL-Light.ttf */; };
+		757697B185194AE2BB365ADD /* BeaufortforLOL-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6B6396BAEF13436E8D8003FB /* BeaufortforLOL-Bold.ttf */; };
 		7699B88040F8A987B510C191 /* libPods-MyApp-MyAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-MyApp-MyAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		9B95C217AEC34A0E9CFB5E28 /* Spiegel_TT_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE2EC5C9550143F983F1D26D /* Spiegel_TT_Regular.ttf */; };
+		AFE44528E46C4C34B2985092 /* BeaufortforLOL-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39357B89A7814A2DB61BB7B7 /* BeaufortforLOL-MediumItalic.ttf */; };
+		B856EA8441D448E69191DE09 /* Spiegel_TT_Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6D606660865B4F9A81810A3C /* Spiegel_TT_Bold.ttf */; };
+		C8A0C3BC0FFF4E06BC276ACF /* Spiegel_TT_Bold_Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F79754994945464A9FB40144 /* Spiegel_TT_Bold_Italic.ttf */; };
+		E6B49988E55C41BDB37DB39C /* BeaufortforLOL-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 62603CFA13BC4B55926FC011 /* BeaufortforLOL-Italic.ttf */; };
+		F775C61406444D42A17166F9 /* BeaufortforLOL-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4280901D4FF04E97AAA58F41 /* BeaufortforLOL-Regular.ttf */; };
+		FF42B32C0DAE42D186529EDF /* BeaufortforLOL-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7441DE0F614547C587601452 /* BeaufortforLOL-Heavy.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,15 +54,33 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MyApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MyApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MyApp/main.m; sourceTree = "<group>"; };
-	    13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = MyApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = MyApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-MyApp-MyAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyApp-MyAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		39357B89A7814A2DB61BB7B7 /* BeaufortforLOL-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-MediumItalic.ttf"; path = "../assets/fonts/BeaufortforLOL-MediumItalic.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-MyApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp.debug.xcconfig"; path = "Target Support Files/Pods-MyApp/Pods-MyApp.debug.xcconfig"; sourceTree = "<group>"; };
+		3C641A8A7E8543F59E0EF00B /* Spiegel_TT_SemiBold_Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Spiegel_TT_SemiBold_Italic.ttf; path = ../assets/fonts/Spiegel_TT_SemiBold_Italic.ttf; sourceTree = "<group>"; };
+		4280901D4FF04E97AAA58F41 /* BeaufortforLOL-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-Regular.ttf"; path = "../assets/fonts/BeaufortforLOL-Regular.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-MyApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp.release.xcconfig"; path = "Target Support Files/Pods-MyApp/Pods-MyApp.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-MyApp-MyAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp-MyAppTests.debug.xcconfig"; path = "Target Support Files/Pods-MyApp-MyAppTests/Pods-MyApp-MyAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-MyApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6184FA2BBB2013E9C946D123 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = MyApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		62603CFA13BC4B55926FC011 /* BeaufortforLOL-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-Italic.ttf"; path = "../assets/fonts/BeaufortforLOL-Italic.ttf"; sourceTree = "<group>"; };
+		6773EE76366F460A8C020DA6 /* BeaufortforLOL-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-LightItalic.ttf"; path = "../assets/fonts/BeaufortforLOL-LightItalic.ttf"; sourceTree = "<group>"; };
+		6B6396BAEF13436E8D8003FB /* BeaufortforLOL-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-Bold.ttf"; path = "../assets/fonts/BeaufortforLOL-Bold.ttf"; sourceTree = "<group>"; };
+		6D606660865B4F9A81810A3C /* Spiegel_TT_Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Spiegel_TT_Bold.ttf; path = ../assets/fonts/Spiegel_TT_Bold.ttf; sourceTree = "<group>"; };
+		7441DE0F614547C587601452 /* BeaufortforLOL-Heavy.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-Heavy.ttf"; path = "../assets/fonts/BeaufortforLOL-Heavy.ttf"; sourceTree = "<group>"; };
+		7C98C5154134406CA721A8D6 /* BeaufortforLOL-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-BoldItalic.ttf"; path = "../assets/fonts/BeaufortforLOL-BoldItalic.ttf"; sourceTree = "<group>"; };
+		7DE9E827B3F94D40B5E90E83 /* BeaufortforLOL-BoldItalic(1).ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-BoldItalic(1).ttf"; path = "../assets/fonts/BeaufortforLOL-BoldItalic(1).ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MyApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-MyApp-MyAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp-MyAppTests.release.xcconfig"; path = "Target Support Files/Pods-MyApp-MyAppTests/Pods-MyApp-MyAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		99A5D90F386F4269A11408C6 /* Spiegel_TT_Regular_Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Spiegel_TT_Regular_Italic.ttf; path = ../assets/fonts/Spiegel_TT_Regular_Italic.ttf; sourceTree = "<group>"; };
+		A31E3E3751F34E45A87BABD9 /* BeaufortforLOL-HeavyItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-HeavyItalic.ttf"; path = "../assets/fonts/BeaufortforLOL-HeavyItalic.ttf"; sourceTree = "<group>"; };
+		AD99F46AA5C74FA5ADBEADB7 /* BeaufortforLOL-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-Light.ttf"; path = "../assets/fonts/BeaufortforLOL-Light.ttf"; sourceTree = "<group>"; };
+		B4E2BD0CC3544ED19C27231F /* BeaufortforLOL-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeaufortforLOL-Medium.ttf"; path = "../assets/fonts/BeaufortforLOL-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		EE2EC5C9550143F983F1D26D /* Spiegel_TT_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Spiegel_TT_Regular.ttf; path = ../assets/fonts/Spiegel_TT_Regular.ttf; sourceTree = "<group>"; };
+		F79754994945464A9FB40144 /* Spiegel_TT_Bold_Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Spiegel_TT_Bold_Italic.ttf; path = ../assets/fonts/Spiegel_TT_Bold_Italic.ttf; sourceTree = "<group>"; };
+		FC375AE1FCCB44ECA2172BB4 /* Spiegel_TT_SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Spiegel_TT_SemiBold.ttf; path = ../assets/fonts/Spiegel_TT_SemiBold.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +130,7 @@
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				6184FA2BBB2013E9C946D123 /* PrivacyInfo.xcprivacy */,
 			);
 			name = MyApp;
 			sourceTree = "<group>";
@@ -106,6 +143,31 @@
 				19F6CBCC0A4E27FBF8BF4A61 /* libPods-MyApp-MyAppTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		38C7A238A2F249B7BC60AE41 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6B6396BAEF13436E8D8003FB /* BeaufortforLOL-Bold.ttf */,
+				7DE9E827B3F94D40B5E90E83 /* BeaufortforLOL-BoldItalic(1).ttf */,
+				7C98C5154134406CA721A8D6 /* BeaufortforLOL-BoldItalic.ttf */,
+				7441DE0F614547C587601452 /* BeaufortforLOL-Heavy.ttf */,
+				A31E3E3751F34E45A87BABD9 /* BeaufortforLOL-HeavyItalic.ttf */,
+				62603CFA13BC4B55926FC011 /* BeaufortforLOL-Italic.ttf */,
+				AD99F46AA5C74FA5ADBEADB7 /* BeaufortforLOL-Light.ttf */,
+				6773EE76366F460A8C020DA6 /* BeaufortforLOL-LightItalic.ttf */,
+				B4E2BD0CC3544ED19C27231F /* BeaufortforLOL-Medium.ttf */,
+				39357B89A7814A2DB61BB7B7 /* BeaufortforLOL-MediumItalic.ttf */,
+				4280901D4FF04E97AAA58F41 /* BeaufortforLOL-Regular.ttf */,
+				6D606660865B4F9A81810A3C /* Spiegel_TT_Bold.ttf */,
+				F79754994945464A9FB40144 /* Spiegel_TT_Bold_Italic.ttf */,
+				EE2EC5C9550143F983F1D26D /* Spiegel_TT_Regular.ttf */,
+				99A5D90F386F4269A11408C6 /* Spiegel_TT_Regular_Italic.ttf */,
+				FC375AE1FCCB44ECA2172BB4 /* Spiegel_TT_SemiBold.ttf */,
+				3C641A8A7E8543F59E0EF00B /* Spiegel_TT_SemiBold_Italic.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -124,6 +186,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				38C7A238A2F249B7BC60AE41 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -245,6 +308,24 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				01AAF4367CECEA7A38FF6599 /* PrivacyInfo.xcprivacy in Resources */,
+				757697B185194AE2BB365ADD /* BeaufortforLOL-Bold.ttf in Resources */,
+				3BA02A7CC72C436088CC04F8 /* BeaufortforLOL-BoldItalic(1).ttf in Resources */,
+				29723AB6C3A04179B1983AE4 /* BeaufortforLOL-BoldItalic.ttf in Resources */,
+				FF42B32C0DAE42D186529EDF /* BeaufortforLOL-Heavy.ttf in Resources */,
+				129E026CBE9B4CE38FB0DBB6 /* BeaufortforLOL-HeavyItalic.ttf in Resources */,
+				E6B49988E55C41BDB37DB39C /* BeaufortforLOL-Italic.ttf in Resources */,
+				6F34BE7B62C748398E617AF7 /* BeaufortforLOL-Light.ttf in Resources */,
+				635AE4B1CE1242C391BFBCA0 /* BeaufortforLOL-LightItalic.ttf in Resources */,
+				0FDA91CA046F4A888C59E58D /* BeaufortforLOL-Medium.ttf in Resources */,
+				AFE44528E46C4C34B2985092 /* BeaufortforLOL-MediumItalic.ttf in Resources */,
+				F775C61406444D42A17166F9 /* BeaufortforLOL-Regular.ttf in Resources */,
+				B856EA8441D448E69191DE09 /* Spiegel_TT_Bold.ttf in Resources */,
+				C8A0C3BC0FFF4E06BC276ACF /* Spiegel_TT_Bold_Italic.ttf in Resources */,
+				9B95C217AEC34A0E9CFB5E28 /* Spiegel_TT_Regular.ttf in Resources */,
+				2FE8FF89D28D43BAB2FF9090 /* Spiegel_TT_Regular_Italic.ttf in Resources */,
+				5DE6F2CE0A974D9CA9B66973 /* Spiegel_TT_SemiBold.ttf in Resources */,
+				1335E7D03C884D11A5FDDAEB /* Spiegel_TT_SemiBold_Italic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,6 +598,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CC = "";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -544,6 +626,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				CXX = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -563,6 +646,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				LD = "";
+				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -582,7 +667,13 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 			};
 			name = Debug;
 		};
@@ -590,6 +681,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CC = "";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -617,6 +709,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				CXX = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -629,6 +722,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				LD = "";
+				LDPLUSPLUS = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -647,7 +742,13 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
