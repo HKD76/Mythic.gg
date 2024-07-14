@@ -9,12 +9,16 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
-import apiClient from "../api/apiClient";
 import UsernameTagInput from "../components/UsernameTagInput";
 import { useTheme as useNavTheme } from "@react-navigation/native";
 import Dropdown from "../components/Dropdown";
 import tw from "twrnc";
 import CustomText from "../components/CustomText";
+
+import { getAccountByRiotID, getAccountByPUUID } from "../api/account";
+import { getRecentMatches, getMatchDetails } from "../api/matches";
+import { getRankedStats } from "../api/rankedStats";
+import { getChampionData } from "../api/champions";
 
 import Iron from "../../assets/images/ranks/Rank=Iron.png";
 import Bronze from "../../assets/images/ranks/Rank=Bronze.png";
@@ -66,11 +70,9 @@ const SearchScreen = () => {
   const [selectedChampion, setSelectedChampion] = useState(null);
   const [selectedQueue, setSelectedQueue] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
-
-  const championOptions = [
+  const [championOptions, setChampionOptions] = useState([
     { label: "Aucun choix", value: null },
-    // Ajoutez ici les options de champions dynamiquement
-  ];
+  ]);
 
   const queueOptions = [
     { label: "Aucun choix", value: null },
@@ -84,31 +86,10 @@ const SearchScreen = () => {
     { label: "Aucun choix", value: null },
     { label: "Top", value: "TOP" },
     { label: "Jungle", value: "JUNGLE" },
-    { label: "Mid", value: "MID" },
-    { label: "ADC", value: "ADC" },
-    { label: "Support", value: "SUPPORT" },
+    { label: "Mid", value: "MIDDLE" },
+    { label: "ADC", value: "BOTTOM" },
+    { label: "Support", value: "UTILITY" },
   ];
-
-  useEffect(() => {
-    // Fetch champion data from API and populate championOptions
-    const fetchChampions = async () => {
-      try {
-        const response = await apiClient.get(
-          `https://ddragon.leagueoflegends.com/cdn/14.12.1/data/en_US/champion.json`
-        );
-        const championsData = response.data.data;
-        const options = Object.values(championsData).map((champion) => ({
-          label: champion.name,
-          value: champion.id,
-        }));
-        setChampionOptions([{ label: "Aucun choix", value: null }, ...options]);
-      } catch (error) {
-        console.error("Error fetching champions:", error);
-      }
-    };
-
-    fetchChampions();
-  }, []);
 
   const fetchProfile = async () => {
     setLoading(true);
@@ -119,39 +100,24 @@ const SearchScreen = () => {
     setRecentMatches(null);
 
     try {
-      const puuidResponse = await apiClient.get(`/account/${username}/${tag}`);
-      const puuidData = puuidResponse.data;
+      const puuidData = await getAccountByRiotID(username, tag);
       setPuuidData(puuidData);
 
-      const profileResponse = await apiClient.get(
-        `/account-puuid/${puuidData.puuid}`
-      );
-      const profileData = profileResponse.data;
+      const profileData = await getAccountByPUUID(puuidData.puuid);
       setProfileData(profileData);
 
-      const rankedStatsResponse = await apiClient.get(
-        `/ranked-stats/${puuidData.id}`
-      );
-      const rankedStatsData = rankedStatsResponse.data.filter(
-        (entry) => entry.queueType === "RANKED_SOLO_5x5"
-      );
+      const rankedStatsData = await getRankedStats(puuidData.id);
       setRankedStats(rankedStatsData);
 
-      const recentMatchesResponse = await apiClient.get(
-        `/recent-matches/${puuidData.puuid}`
-      );
-      setRecentMatches(recentMatchesResponse.data);
-      const matchesData = recentMatchesResponse.data;
+      const matchesData = await getRecentMatches(puuidData.puuid);
+      setRecentMatches(matchesData);
 
       if (matchesData && matchesData.length > 0) {
         const lastChampionId = matchesData[0].info.participants.find(
           (p) => p.puuid === puuidData.puuid
         ).championId;
 
-        const championResponse = await apiClient.get(
-          `https://ddragon.leagueoflegends.com/cdn/14.12.1/data/en_US/champion.json`
-        );
-        const championsData = championResponse.data.data;
+        const championsData = await getChampionData();
 
         const lastChampionName = Object.values(championsData).find(
           (champion) => parseInt(champion.key) === lastChampionId
@@ -159,8 +125,35 @@ const SearchScreen = () => {
 
         const splashUrl = `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${lastChampionName}_0.jpg`;
         setLastChampionSplash(splashUrl);
+
+        // Extract champions played
+        const playedChampions = new Set();
+        matchesData.forEach((match) => {
+          const playerData = match.info.participants.find(
+            (p) => p.puuid === puuidData.puuid
+          );
+          if (playerData) {
+            playedChampions.add(playerData.championName);
+          }
+        });
+
+        const championOptionsList = [
+          { label: "Aucun choix", value: null },
+          ...Array.from(playedChampions).map((championName) => {
+            const championData = Object.values(championsData).find(
+              (champion) => champion.id === championName
+            );
+            return {
+              label: championData.name,
+              value: championData.id,
+            };
+          }),
+        ];
+
+        setChampionOptions(championOptionsList);
       }
     } catch (err) {
+      console.error("Error fetching profile:", err);
       setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
@@ -187,6 +180,16 @@ const SearchScreen = () => {
 
   const getRankImage = (tier) => {
     return rankImages[tier] || null;
+  };
+
+  const getPlayerRankImage = (puuid, rankedStats) => {
+    const playerRank = rankedStats.find((stat) => stat.summonerId === puuid);
+    return playerRank ? getRankImage(playerRank.tier) : null;
+  };
+
+  const getPlayerRank = (puuid, rankedStats) => {
+    const playerRank = rankedStats.find((stat) => stat.summonerId === puuid);
+    return playerRank ? `${playerRank.tier} ${playerRank.rank}` : "Unranked";
   };
 
   const getItemImage = (itemId) => {
@@ -216,14 +219,36 @@ const SearchScreen = () => {
 
   const formatGameDuration = (seconds) => {
     const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return `${hours > 0 ? `${hours}h ` : ""}${remainingMinutes}m`;
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+  const formatDateToRelativeTime = (timestamp) => {
+    const now = new Date();
+    const matchDate = new Date(timestamp);
+    const diffMs = now - matchDate;
+    const diffSeconds = Math.floor(diffMs / 1000);
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffDays > 0) {
+      return `${diffDays} days ago`;
+    } else if (diffHours > 0) {
+      return `${diffHours} hours ago`;
+    } else if (diffMinutes > 0) {
+      return `${diffMinutes} minutes ago`;
+    } else {
+      return `${diffSeconds} seconds ago`;
+    }
+  };
+
+  const getTeamStats = (team) => {
+    return {
+      turrets: team.objectives.tower.kills,
+      drakes: team.objectives.dragon.kills,
+      nashors: team.objectives.baron.kills,
+    };
   };
 
   const truncateName = (name) => (name.length > 3 ? name.slice(0, 3) : name);
@@ -260,7 +285,13 @@ const SearchScreen = () => {
 
       {profileData && puuidData && (
         <ImageBackground
-          source={{ uri: lastChampionSplash }}
+          source={
+            lastChampionSplash
+              ? {
+                  uri: lastChampionSplash,
+                }
+              : null
+          }
           imageStyle={tw``}
           style={tw`w-full bg-[${colors.card}] rounded-[10px] overflow-hidden`}
         >
@@ -328,7 +359,13 @@ const SearchScreen = () => {
               <View style={tw`w-25 mb-4`}>
                 {profileIconUrl && (
                   <Image
-                    source={{ uri: profileIconUrl }}
+                    source={
+                      profileIconUrl
+                        ? {
+                            uri: profileIconUrl,
+                          }
+                        : null
+                    }
                     style={tw`w-25 h-25 rounded-[40px] bg-gray-600`}
                   />
                 )}
@@ -419,7 +456,13 @@ const SearchScreen = () => {
                   </View>
                   <View style={tw``}>
                     <Image
-                      source={getRankImage(rankedStats[0].tier)}
+                      source={
+                        rankedStats[0].tier
+                          ? {
+                              uri: getRankImage(rankedStats[0].tier),
+                            }
+                          : null
+                      }
                       style={tw`w-23 h-23 m-[-15] mb-[-10]`}
                     />
                     <CustomText
@@ -470,8 +513,18 @@ const SearchScreen = () => {
             const playerData = getPlayerData(match, puuidData.puuid);
             const isVictory = playerData.win;
             const matchDuration = formatGameDuration(match.info.gameDuration);
-            const matchDate = formatDate(match.info.gameCreation);
+            const matchDate = formatDateToRelativeTime(match.info.gameCreation);
             const queueType = match.info.queueId === 420 ? "Ranked" : "Normal";
+
+            const blueTeam = match.info.teams.find(
+              (team) => team.teamId === 100
+            );
+            const redTeam = match.info.teams.find(
+              (team) => team.teamId === 200
+            );
+
+            const blueTeamStats = getTeamStats(blueTeam);
+            const redTeamStats = getTeamStats(redTeam);
 
             return (
               <TouchableOpacity
@@ -490,13 +543,7 @@ const SearchScreen = () => {
                   style={tw`absolute inset-0 rounded-lg`}
                 >
                   <Defs>
-                    <LinearGradient
-                      id="linearGrad"
-                      x1="0%"
-                      y1="0%"
-                      x2="100%"
-                      y2="0%"
-                    >
+                    <LinearGradient id="linearGrad" x1="0%" y1="0%" x2="100%">
                       <Stop
                         offset="0%"
                         stopColor={isVictory ? "#37598C" : "#9B4E4E"}
@@ -517,299 +564,51 @@ const SearchScreen = () => {
                     isVictory ? "#3682DC" : "#DE2A34"
                   }]`}
                 >
-                  <View style={tw`flex-row px-1 gap-2`}>
-                    <CustomText
-                      weight={""}
-                      style={tw`${
-                        isVictory ? "text-[#3682DC]" : "text-[#DE2A34]"
-                      }`}
-                    >
-                      {isVictory ? "Victory" : "Defeat"}
-                    </CustomText>
-                    <CustomText weight={"Bmedium"} style={tw`text-white`}>
-                      {matchDuration}
-                    </CustomText>
-                  </View>
-                  <View style={tw`flex-row px-1 gap-2`}>
-                    <CustomText weight={"Bmedium"} style={tw`text-white`}>
-                      {queueType}
-                    </CustomText>
-                    <CustomText weight={"Bmedium"} style={tw`text-white`}>
-                      {matchDate}
-                    </CustomText>
-                  </View>
-                </View>
-
-                <View style={tw`flex-row justify-around items-center`}>
-                  <Svg
-                    height="100%"
-                    width="100%"
-                    style={tw`absolute inset-0 rounded-lg`}
-                  >
-                    <Defs>
-                      <LinearGradient
-                        id="linearGrad"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="0%"
-                      >
-                        <Stop
-                          offset="0%"
-                          stopColor={isVictory ? "#37598C" : "#9B4E4E"}
-                          stopOpacity="1"
-                        />
-                        <Stop
-                          offset="38%"
-                          stopColor={isVictory ? "#27405C" : "#5F4848"}
-                          stopOpacity="1"
-                        />
-                      </LinearGradient>
-                    </Defs>
-                    <Rect width="100%" height="100%" fill="url(#linearGrad)" />
-                  </Svg>
-
-                  <View style={tw``}>
-                    <Image
-                      source={{
-                        uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${playerData.championName}.png`,
-                      }}
-                      style={tw`w-[45px] h-[45px] rounded-[2px]`}
-                    />
-                    <View style={tw`flex-row`}>
-                      <Image
-                        source={{
-                          uri: getSummonerSpellImage(playerData.summoner1Id),
-                        }}
-                        style={tw`bg-black w-[15px] h-[15px]`}
-                      />
-                      <Image
-                        source={{
-                          uri: getSummonerSpellImage(playerData.summoner2Id),
-                        }}
-                        style={tw`bg-black w-[15px] h-[15px]`}
-                      />
-                      <Image
-                        source={{
-                          uri: getRuneImage(
-                            playerData.perks.styles[0].selections[0].perk
-                          ),
-                        }}
-                        style={tw`bg-black w-[15px] h-[15px]`}
-                      />
-                    </View>
-                  </View>
-
-                  <View style={tw`gap-2`}>
-                    <View style={tw`flex-row justify-between`}>
-                      <View style={tw`flex-1`}>
-                        <View style={tw`flex-row`}>
-                          <CustomText weight={"Bmedium"} style={tw`text-white`}>
-                            {playerData.kills} /&nbsp;
-                          </CustomText>
-                          <CustomText weight={""} style={tw`text-[#DE2A34]`}>
-                            {playerData.deaths}&nbsp;
-                          </CustomText>
-                          <CustomText weight={"Bmedium"} style={tw`text-white`}>
-                            / {playerData.assists}
-                          </CustomText>
-                        </View>
-                        <View style={tw`flex flex-row`}>
-                          <CustomText
-                            weight={"M"}
-                            style={tw`text-white text-[12px]`}
-                          >
-                            {(
-                              (playerData.kills + playerData.assists) /
-                              Math.max(1, playerData.deaths)
-                            ).toFixed(2)}
-                          </CustomText>
-                          <CustomText
-                            weight={"M"}
-                            style={tw`text-white text-[12px] opacity-60`}
-                          >
-                            &nbsp;KDA
-                          </CustomText>
-                        </View>
-                      </View>
-                      <View style={tw`flex-1`}>
-                        <View style={tw`flex flex-row`}>
-                          <CustomText weight={"Bmedium"} style={tw`text-white`}>
-                            {playerData.totalMinionsKilled}&nbsp;
-                          </CustomText>
-                          <CustomText
-                            weight={"Bmedium"}
-                            style={tw`text-white opacity-60`}
-                          >
-                            CS
-                          </CustomText>
-                        </View>
+                  {!expandedMatches[match.info.gameId] ? (
+                    <>
+                      <View style={tw`flex-row px-1 gap-2`}>
                         <CustomText
-                          weight={"M"}
-                          style={tw`text-white text-[12px]`}
+                          weight={""}
+                          style={tw`${
+                            isVictory ? "text-[#3682DC]" : "text-[#DE2A34]"
+                          }`}
                         >
-                          {(
-                            (playerData.kills /
-                              match.info.teams.reduce(
-                                (total, team) => total + team.kills,
-                                0
-                              )) *
-                            100
-                          ).toFixed(1)}
-                          % KP
+                          {isVictory ? "Victory" : "Defeat"}
+                        </CustomText>
+                        <CustomText weight={"Bmedium"} style={tw`text-white`}>
+                          {matchDuration}
                         </CustomText>
                       </View>
-                    </View>
-                    <View style={tw`flex-row gap-[2px] justify-between`}>
-                      {[...Array(6)].map((_, itemIdx) => (
-                        <Image
-                          key={itemIdx}
-                          source={{
-                            uri: getItemImage(playerData[`item${itemIdx}`]),
-                          }}
-                          style={tw`w-[21px] h-[21px] rounded-[5px] ${
-                            !playerData[`item${itemIdx}`] ? "bg-[#242222]" : ""
-                          }`}
-                        />
-                      ))}
-                      <Image
-                        source={{
-                          uri: getItemImage(playerData.item6),
-                        }}
-                        style={tw`w-[21px] h-[21px] rounded-[5px] ${
-                          !playerData.item6 ? "bg-black" : ""
-                        }`}
-                      />
-                    </View>
-                  </View>
-
-                  <View style={tw`flex-row p-[5px] pr-0`}>
-                    <View style={tw`gap-[2px]`}>
-                      {match.info.participants
-                        .slice(0, 5)
-                        .map((player, idx) => (
-                          <View
-                            key={idx}
-                            style={tw`flex-row items-center ${
-                              player.puuid === puuidData.puuid ? "" : ""
-                            }`}
-                          >
-                            {player.puuid === puuidData.puuid ? (
-                              <Svg
-                                height="100%"
-                                width="100%"
-                                style={tw`absolute inset-0 rounded-lg`}
-                              >
-                                <Defs>
-                                  <LinearGradient
-                                    id="linearGrad"
-                                    x1="0%"
-                                    y1="0%"
-                                    x2="100%"
-                                    y2="0%"
-                                  >
-                                    <Stop
-                                      offset="50%"
-                                      stopColor={"#E7A23B"}
-                                      stopOpacity="1"
-                                    />
-                                    <Stop
-                                      offset="100%"
-                                      stopColor={"#000000"}
-                                      stopOpacity="0"
-                                    />
-                                  </LinearGradient>
-                                </Defs>
-                                <Rect
-                                  width="100%"
-                                  height="100%"
-                                  fill="url(#linearGrad)"
-                                />
-                              </Svg>
-                            ) : (
-                              ""
-                            )}
-                            <Image
-                              source={{
-                                uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${player.championName}.png`,
-                              }}
-                              style={tw`w-[15px] h-[15px] rounded-[2px]`}
-                            />
-                            <CustomText
-                              weight={"M"}
-                              style={tw`ml-1 text-white text-[10px]`}
-                            >
-                              {truncateName(player.summonerName)}..
-                            </CustomText>
-                          </View>
-                        ))}
-                    </View>
-
-                    <View style={tw`gap-[2px]`}>
-                      {match.info.participants
-                        .slice(5, 10)
-                        .map((player, idx) => (
-                          <View
-                            key={idx}
-                            style={tw`flex-row items-center ${
-                              player.puuid === puuidData.puuid ? "" : ""
-                            }`}
-                          >
-                            {player.puuid === puuidData.puuid ? (
-                              <Svg
-                                height="100%"
-                                width="100%"
-                                style={tw`absolute inset-0 rounded-lg`}
-                              >
-                                <Defs>
-                                  <LinearGradient
-                                    id="linearGrad"
-                                    x1="0%"
-                                    y1="0%"
-                                    x2="100%"
-                                    y2="0%"
-                                  >
-                                    <Stop
-                                      offset="50%"
-                                      stopColor={"#E7A23B"}
-                                      stopOpacity="1"
-                                    />
-                                    <Stop
-                                      offset="100%"
-                                      stopColor={"#000000"}
-                                      stopOpacity="0"
-                                    />
-                                  </LinearGradient>
-                                </Defs>
-                                <Rect
-                                  width="100%"
-                                  height="100%"
-                                  fill="url(#linearGrad)"
-                                />
-                              </Svg>
-                            ) : (
-                              ""
-                            )}
-                            <Image
-                              source={{
-                                uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${player.championName}.png`,
-                              }}
-                              style={tw`w-[15px] h-[15px] rounded-[2px]`}
-                            />
-                            <CustomText
-                              weight={"M"}
-                              style={tw`ml-1 text-white text-[10px]`}
-                            >
-                              {truncateName(player.summonerName)}..
-                            </CustomText>
-                          </View>
-                        ))}
-                    </View>
-                  </View>
+                      <View style={tw`flex-row px-1 gap-2`}>
+                        <CustomText weight={"Bmedium"} style={tw`text-white`}>
+                          {queueType}
+                        </CustomText>
+                        <CustomText weight={"Bmedium"} style={tw`text-white`}>
+                          {matchDate}
+                        </CustomText>
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      <View style={tw`flex-row px-1`}>
+                        <CustomText weight={"Bmedium"} style={tw`text-white`}>
+                          {matchDuration}
+                        </CustomText>
+                      </View>
+                      <View style={tw`flex-row px-1 gap-2`}>
+                        <CustomText weight={"Bmedium"} style={tw`text-white`}>
+                          {queueType}
+                        </CustomText>
+                        <CustomText weight={"Bmedium"} style={tw`text-white`}>
+                          {matchDate}
+                        </CustomText>
+                      </View>
+                    </>
+                  )}
                 </View>
 
-                {expandedMatches[match.info.gameId] && (
-                  <View style={tw``}>
+                {!expandedMatches[match.info.gameId] && (
+                  <View style={tw`flex-row justify-around items-center`}>
                     <Svg
                       height="100%"
                       width="100%"
@@ -821,7 +620,6 @@ const SearchScreen = () => {
                           x1="0%"
                           y1="0%"
                           x2="100%"
-                          y2="0%"
                         >
                           <Stop
                             offset="0%"
@@ -841,101 +639,517 @@ const SearchScreen = () => {
                         fill="url(#linearGrad)"
                       />
                     </Svg>
-                    <View style={tw`flex`}>
-                      <CustomText
-                        weight={"Bmedium"}
-                        style={tw`mb-2 text-white`}
-                      >
-                        Team 1
-                      </CustomText>
-                      <View style={tw`flex-1`}>
+
+                    <View style={tw``}>
+                      <Image
+                        source={
+                          playerData.championName
+                            ? {
+                                uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${playerData.championName}.png`,
+                              }
+                            : null
+                        }
+                        style={tw`w-[45px] h-[45px] rounded-[2px]`}
+                      />
+                      <View style={tw`flex-row`}>
+                        <Image
+                          source={
+                            playerData.summoner1Id
+                              ? {
+                                  uri: getSummonerSpellImage(
+                                    playerData.summoner1Id
+                                  ),
+                                }
+                              : null
+                          }
+                          style={tw`bg-black w-[15px] h-[15px]`}
+                        />
+                        <Image
+                          source={
+                            playerData.summoner2Id
+                              ? {
+                                  uri: getSummonerSpellImage(
+                                    playerData.summoner2Id
+                                  ),
+                                }
+                              : null
+                          }
+                          style={tw`bg-black w-[15px] h-[15px]`}
+                        />
+                        <Image
+                          source={
+                            playerData.perks.styles[0].selections[0].perk
+                              ? {
+                                  uri: getRuneImage(
+                                    playerData.perks.styles[0].selections[0]
+                                      .perk
+                                  ),
+                                }
+                              : null
+                          }
+                          style={tw`bg-black w-[15px] h-[15px]`}
+                        />
+                      </View>
+                    </View>
+
+                    <View style={tw`gap-2`}>
+                      <View style={tw`flex-row justify-between`}>
+                        <View style={tw`flex-1`}>
+                          <View style={tw`flex-row`}>
+                            <CustomText
+                              weight={"Bmedium"}
+                              style={tw`text-white`}
+                            >
+                              {playerData.kills} /&nbsp;
+                            </CustomText>
+                            <CustomText weight={""} style={tw`text-[#DE2A34]`}>
+                              {playerData.deaths}&nbsp;
+                            </CustomText>
+                            <CustomText
+                              weight={"Bmedium"}
+                              style={tw`text-white`}
+                            >
+                              / {playerData.assists}
+                            </CustomText>
+                          </View>
+                          <View style={tw`flex flex-row`}>
+                            <CustomText
+                              weight={"M"}
+                              style={tw`text-white text-[12px]`}
+                            >
+                              {(
+                                (playerData.kills + playerData.assists) /
+                                Math.max(1, playerData.deaths)
+                              ).toFixed(2)}
+                            </CustomText>
+                            <CustomText
+                              weight={"M"}
+                              style={tw`text-white text-[12px] opacity-60`}
+                            >
+                              &nbsp;KDA
+                            </CustomText>
+                          </View>
+                        </View>
+                        <View style={tw`flex-1`}>
+                          <View style={tw`flex flex-row`}>
+                            <CustomText
+                              weight={"Bmedium"}
+                              style={tw`text-white`}
+                            >
+                              {playerData.totalMinionsKilled}&nbsp;
+                            </CustomText>
+                            <CustomText
+                              weight={"Bmedium"}
+                              style={tw`text-white opacity-60`}
+                            >
+                              CS
+                            </CustomText>
+                          </View>
+                          <CustomText
+                            weight={"M"}
+                            style={tw`text-white text-[12px]`}
+                          >
+                            {(
+                              (playerData.kills /
+                                match.info.teams.reduce(
+                                  (total, team) => total + team.kills,
+                                  0
+                                )) *
+                              100
+                            ).toFixed(1)}
+                            % KP
+                          </CustomText>
+                        </View>
+                      </View>
+                      <View style={tw`flex-row gap-[2px] justify-between`}>
+                        {[...Array(6)].map((_, itemIdx) => (
+                          <Image
+                            key={itemIdx}
+                            source={
+                              playerData[`item${itemIdx}`]
+                                ? {
+                                    uri: getItemImage(
+                                      playerData[`item${itemIdx}`]
+                                    ),
+                                  }
+                                : null
+                            }
+                            style={tw`w-[21px] h-[21px] rounded-[5px] ${
+                              !playerData[`item${itemIdx}`]
+                                ? "bg-[#242222]"
+                                : ""
+                            }`}
+                          />
+                        ))}
+                        <Image
+                          source={
+                            playerData.item6
+                              ? { uri: getItemImage(playerData.item6) }
+                              : null
+                          }
+                          style={tw`w-[21px] h-[21px] rounded-[5px] ${
+                            !playerData.item6 ? "bg-black" : ""
+                          }`}
+                        />
+                      </View>
+                    </View>
+
+                    <View style={tw`flex-row p-[5px] pr-0`}>
+                      <View style={tw`gap-[2px]`}>
                         {match.info.participants
                           .slice(0, 5)
                           .map((player, idx) => (
                             <View
                               key={idx}
-                              style={tw`flex-row mb-2 items-center ${
+                              style={tw`flex-row items-center ${
                                 player.puuid === puuidData.puuid ? "" : ""
                               }`}
                             >
+                              {player.puuid === puuidData.puuid ? (
+                                <Svg
+                                  height="100%"
+                                  width="100%"
+                                  style={tw`absolute inset-0 rounded-lg`}
+                                >
+                                  <Defs>
+                                    <LinearGradient
+                                      id="linearGrad"
+                                      x1="0%"
+                                      y1="0%"
+                                      x2="100%"
+                                    >
+                                      <Stop
+                                        offset="50%"
+                                        stopColor={"#E7A23B"}
+                                        stopOpacity="1"
+                                      />
+                                      <Stop
+                                        offset="100%"
+                                        stopColor={"#000000"}
+                                        stopOpacity="0"
+                                      />
+                                    </LinearGradient>
+                                  </Defs>
+                                  <Rect
+                                    width="100%"
+                                    height="100%"
+                                    fill="url(#linearGrad)"
+                                  />
+                                </Svg>
+                              ) : (
+                                ""
+                              )}
                               <Image
-                                source={{
-                                  uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${player.championName}.png`,
-                                }}
-                                style={tw`w-10 h-10 rounded-full`}
+                                source={
+                                  player.championName
+                                    ? {
+                                        uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${player.championName}.png`,
+                                      }
+                                    : null
+                                }
+                                style={tw`w-[15px] h-[15px] rounded-[2px]`}
                               />
-                              <View style={tw`ml-2`}>
-                                <CustomText weight={"M"} style={tw`text-white`}>
-                                  {player.championName}
-                                </CustomText>
-                                <View style={tw`flex-row`}>
-                                  {[...Array(7)].map((_, itemIdx) => (
-                                    <Image
-                                      key={itemIdx}
-                                      source={{
-                                        uri: getItemImage(
-                                          player[`item${itemIdx}`]
-                                        ),
-                                      }}
-                                      style={tw`w-8 h-8 ${
-                                        !player[`item${itemIdx}`]
-                                          ? "bg-black"
-                                          : ""
-                                      }`}
-                                    />
-                                  ))}
-                                </View>
-                              </View>
+                              <CustomText
+                                weight={"M"}
+                                style={tw`ml-1 text-white text-[10px]`}
+                              >
+                                {truncateName(player.summonerName)}..
+                              </CustomText>
                             </View>
                           ))}
                       </View>
-                      <CustomText
-                        weight={"Bmedium"}
-                        style={tw`mb-2 text-white`}
-                      >
-                        Team 2
-                      </CustomText>
-                      <View style={tw`flex-1`}>
+
+                      <View style={tw`gap-[2px]`}>
                         {match.info.participants
                           .slice(5, 10)
                           .map((player, idx) => (
                             <View
                               key={idx}
-                              style={tw`flex-row mb-2 items-center ${
+                              style={tw`flex-row items-center ${
                                 player.puuid === puuidData.puuid ? "" : ""
                               }`}
                             >
+                              {player.puuid === puuidData.puuid ? (
+                                <Svg
+                                  height="100%"
+                                  width="100%"
+                                  style={tw`absolute inset-0 rounded-lg`}
+                                >
+                                  <Defs>
+                                    <LinearGradient
+                                      id="linearGrad"
+                                      x1="0%"
+                                      y1="0%"
+                                      x2="100%"
+                                    >
+                                      <Stop
+                                        offset="50%"
+                                        stopColor={"#E7A23B"}
+                                        stopOpacity="1"
+                                      />
+                                      <Stop
+                                        offset="100%"
+                                        stopColor={"#000000"}
+                                        stopOpacity="0"
+                                      />
+                                    </LinearGradient>
+                                  </Defs>
+                                  <Rect
+                                    width="100%"
+                                    height="100%"
+                                    fill="url(#linearGrad)"
+                                  />
+                                </Svg>
+                              ) : (
+                                ""
+                              )}
                               <Image
-                                source={{
-                                  uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${player.championName}.png`,
-                                }}
-                                style={tw`w-10 h-10 rounded-full`}
+                                source={
+                                  player.championName
+                                    ? {
+                                        uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${player.championName}.png`,
+                                      }
+                                    : null
+                                }
+                                style={tw`w-[15px] h-[15px] rounded-[2px]`}
                               />
-                              <View style={tw`ml-2`}>
-                                <CustomText weight={"M"} style={tw`text-white`}>
-                                  {player.championName}
-                                </CustomText>
-                                <View style={tw`flex-row`}>
-                                  {[...Array(7)].map((_, itemIdx) => (
-                                    <Image
-                                      key={itemIdx}
-                                      source={{
-                                        uri: getItemImage(
-                                          player[`item${itemIdx}`]
-                                        ),
-                                      }}
-                                      style={tw`w-8 h-8 ${
-                                        !player[`item${itemIdx}`]
-                                          ? "bg-black"
-                                          : ""
-                                      }`}
-                                    />
-                                  ))}
-                                </View>
-                              </View>
+                              <CustomText
+                                weight={"M"}
+                                style={tw`ml-1 text-white text-[10px]`}
+                              >
+                                {truncateName(player.summonerName)}..
+                              </CustomText>
                             </View>
                           ))}
                       </View>
+                    </View>
+                  </View>
+                )}
+
+                {expandedMatches[match.info.gameId] && (
+                  <View style={tw``}>
+                    <View
+                      style={tw`flex-row justify-between items-center border-b-[1px] border-[${
+                        blueTeam.win ? "#3682DC" : "#DE2A34"
+                      }]`}
+                    >
+                      <View style={tw`flex-row px-1 gap-2`}>
+                        <CustomText
+                          weight={""}
+                          style={tw`${
+                            blueTeam.win ? "text-[#3682DC]" : "text-[#DE2A34]"
+                          }`}
+                        >
+                          {blueTeam.win ? "Victory" : "Defeat"}
+                        </CustomText>
+                        <CustomText weight={"Bmedium"} style={tw`text-white`}>
+                          T: {blueTeamStats.turrets} D: {blueTeamStats.drakes}{" "}
+                          N: {blueTeamStats.nashors}
+                        </CustomText>
+                      </View>
+                      <View style={tw`flex-row px-1`}></View>
+                    </View>
+
+                    <CustomText weight={"Bmedium"} style={tw`mb-2 text-white`}>
+                      Team 1
+                    </CustomText>
+                    <View style={tw`flex-1`}>
+                      {match.info.participants
+                        .slice(0, 5)
+                        .map((player, idx) => (
+                          <View
+                            key={idx}
+                            style={tw`flex-row mb-2 items-center ${
+                              player.puuid === puuidData.puuid ? "" : ""
+                            }`}
+                          >
+                            <Image
+                              source={
+                                player.championName
+                                  ? {
+                                      uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${player.championName}.png`,
+                                    }
+                                  : null
+                              }
+                              style={tw`w-10 h-10 rounded-full`}
+                            />
+                            <View style={tw`ml-2`}>
+                              <CustomText weight={"M"} style={tw`text-white`}>
+                                {player.summonerName}
+                              </CustomText>
+                              <View style={tw`flex-row`}>
+                                {[...Array(7)].map((_, itemIdx) => (
+                                  <Image
+                                    key={itemIdx}
+                                    source={
+                                      player[`item${itemIdx}`]
+                                        ? {
+                                            uri: getItemImage(
+                                              player[`item${itemIdx}`]
+                                            ),
+                                          }
+                                        : null
+                                    }
+                                    style={tw`w-8 h-8 ${
+                                      !player[`item${itemIdx}`]
+                                        ? "bg-black"
+                                        : ""
+                                    }`}
+                                  />
+                                ))}
+                              </View>
+                              <View style={tw`flex-row`}>
+                                <CustomText
+                                  weight={"Bmedium"}
+                                  style={tw`text-white`}
+                                >
+                                  {player.kills}/{player.deaths}/
+                                  {player.assists}
+                                </CustomText>
+                                <CustomText
+                                  weight={"Bmedium"}
+                                  style={tw`text-white`}
+                                >
+                                  &nbsp;CS: {player.totalMinionsKilled}
+                                </CustomText>
+                              </View>
+                              <View style={tw`flex-row items-center`}>
+                                <Image
+                                  source={
+                                    player.puuid && rankedStats
+                                      ? {
+                                          uri: getPlayerRankImage(
+                                            player.puuid,
+                                            rankedStats
+                                          ),
+                                        }
+                                      : null
+                                  }
+                                  style={tw`w-5 h-5`}
+                                />
+                                <CustomText
+                                  weight={"Bmedium"}
+                                  style={tw`text-white`}
+                                >
+                                  &nbsp;
+                                  {getPlayerRank(player.puuid, rankedStats)}
+                                </CustomText>
+                              </View>
+                            </View>
+                          </View>
+                        ))}
+                    </View>
+
+                    <View
+                      style={tw`flex-row justify-between items-center border-b-[1px] border-[${
+                        redTeam.win ? "#3682DC" : "#DE2A34"
+                      }]`}
+                    >
+                      <View style={tw`flex-row px-1 gap-2`}>
+                        <CustomText
+                          weight={""}
+                          style={tw`${
+                            redTeam.win ? "text-[#3682DC]" : "text-[#DE2A34]"
+                          }`}
+                        >
+                          {redTeam.win ? "Victory" : "Defeat"}
+                        </CustomText>
+                        <CustomText weight={"Bmedium"} style={tw`text-white`}>
+                          T: {redTeamStats.turrets} D: {redTeamStats.drakes} N:{" "}
+                          {redTeamStats.nashors}
+                        </CustomText>
+                      </View>
+                      <View style={tw`flex-row px-1`}></View>
+                    </View>
+
+                    <CustomText weight={"Bmedium"} style={tw`mb-2 text-white`}>
+                      Team 2
+                    </CustomText>
+                    <View style={tw`flex-1`}>
+                      {match.info.participants
+                        .slice(5, 10)
+                        .map((player, idx) => (
+                          <View
+                            key={idx}
+                            style={tw`flex-row mb-2 items-center ${
+                              player.puuid === puuidData.puuid ? "" : ""
+                            }`}
+                          >
+                            <Image
+                              source={
+                                player.championName
+                                  ? {
+                                      uri: `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/champion/${player.championName}.png`,
+                                    }
+                                  : null
+                              }
+                              style={tw`w-10 h-10 rounded-full`}
+                            />
+                            <View style={tw`ml-2`}>
+                              <CustomText weight={"M"} style={tw`text-white`}>
+                                {player.summonerName}
+                              </CustomText>
+                              <View style={tw`flex-row`}>
+                                {[...Array(7)].map((_, itemIdx) => (
+                                  <Image
+                                    key={itemIdx}
+                                    source={
+                                      player[`item${itemIdx}`]
+                                        ? {
+                                            uri: getItemImage(
+                                              player[`item${itemIdx}`]
+                                            ),
+                                          }
+                                        : null
+                                    }
+                                    style={tw`w-8 h-8 ${
+                                      !player[`item${itemIdx}`]
+                                        ? "bg-black"
+                                        : ""
+                                    }`}
+                                  />
+                                ))}
+                              </View>
+                              <View style={tw`flex-row`}>
+                                <CustomText
+                                  weight={"Bmedium"}
+                                  style={tw`text-white`}
+                                >
+                                  {player.kills}/{player.deaths}/
+                                  {player.assists}
+                                </CustomText>
+                                <CustomText
+                                  weight={"Bmedium"}
+                                  style={tw`text-white`}
+                                >
+                                  &nbsp;CS: {player.totalMinionsKilled}
+                                </CustomText>
+                              </View>
+                              <View style={tw`flex-row items-center`}>
+                                <Image
+                                  source={
+                                    player.puuid && rankedStats
+                                      ? {
+                                          uri: getPlayerRankImage(
+                                            player.puuid,
+                                            rankedStats
+                                          ),
+                                        }
+                                      : null
+                                  }
+                                  style={tw`w-5 h-5`}
+                                />
+                                <CustomText
+                                  weight={"Bmedium"}
+                                  style={tw`text-white`}
+                                >
+                                  &nbsp;
+                                  {getPlayerRank(player.puuid, rankedStats)}
+                                </CustomText>
+                              </View>
+                            </View>
+                          </View>
+                        ))}
                     </View>
                   </View>
                 )}
