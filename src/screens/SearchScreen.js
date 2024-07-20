@@ -335,6 +335,8 @@ const SearchScreen = () => {
   };
 
   const truncateName = (name) => (name.length > 3 ? name.slice(0, 3) : name);
+  const truncateNameMatch = (name) =>
+    name.length > 11 ? `${name.slice(0, 11)}..` : name;
 
   const filteredMatches = recentMatches
     ? recentMatches.filter((match) => {
@@ -1219,7 +1221,7 @@ const SearchScreen = () => {
                               />
                               <View style={tw`flex items-start`}>
                                 <CustomText weight={"M"} style={tw`text-white`}>
-                                  {player.summonerName}
+                                  {truncateNameMatch(player.summonerName)}
                                 </CustomText>
                                 <View style={tw`flex-row`}>
                                   <CustomText
@@ -1445,7 +1447,7 @@ const SearchScreen = () => {
                               />
                               <View style={tw`flex items-start`}>
                                 <CustomText weight={"M"} style={tw`text-white`}>
-                                  {player.summonerName}
+                                  {truncateNameMatch(player.summonerName)}
                                 </CustomText>
                                 <View style={tw`flex-row`}>
                                   <CustomText
