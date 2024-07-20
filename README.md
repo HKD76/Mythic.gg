@@ -1,79 +1,64 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Prise en Main
 
-# Getting Started
+<!-- > **Remarque** : Assurez-vous d'avoir complété les instructions de [Configuration de l'Environnement - React Native](https://reactnative.dev/docs/environment-setup) jusqu'à l'étape "Créer une nouvelle application", avant de continuer. -->
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Étape 1 : Démarrer le Serveur Metro
 
-## Step 1: Start the Metro Server
+Tout d'abord, vous devez démarrer **Metro**, le _bundler_ JavaScript fourni _avec_ React Native.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
+Pour démarrer Metro, exécutez la commande suivante depuis la _racine_ du projet :
 
 ```bash
-# using npm
+# en utilisant npm
 npm start
 
-# OR using Yarn
+# OU en utilisant Yarn
 yarn start
 ```
 
-## Step 2: Start your Application
+## Étape 2 : Démarrer l'application
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+Laissez Metro Bundler s'exécuter dans son propre terminal. Ouvrez un nouveau terminal depuis la racine de votre projet React Native. Exécutez la commande suivante pour démarrer l'application Android ou iOS :
 
-### For Android
+### Pour Android :
 
 ```bash
-# using npm
+# en utilisant npm
 npm run android
 
-# OR using Yarn
+# OU en utilisant Yarn
 yarn android
 ```
 
-### For iOS
+### Pour iOS :
 
 ```bash
-# using npm
+# en utilisant npm
 npm run ios
 
-# OR using Yarn
+# OU en utilisant Yarn
 yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+Si tout est correctement configuré, vous devriez voir l'application s'exécuter dans votre émulateur Android ou simulateur iOS sous peu, à condition que vous ayez correctement configuré votre émulateur/simulateur.
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+C'est une façon de lancer l'application — vous pouvez également la lancer directement depuis Android Studio et Xcode respectivement.
+Vous pouvez également brancher votre propre appareil et l'utiliser comme émulateur.
 
-## Step 3: Modifying your App
+# Dépannage
 
-Now that you have successfully run the app, let's modify it.
+Si vous n'arrivez pas à faire fonctionner cela, consultez la page [Dépannage](https://reactnative.dev/docs/troubleshooting).
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+# Documentation de Déploiement et Infrastructures
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## 1. Base de Données SQL (MySQL)
 
-## Congratulations! :tada:
+La base de données MySQL est utilisée pour stocker les données de fin de parties de nombreux joueurs. Chaque fois qu'un joueur recherche son nom, les données de ses parties sont collectées et enregistrées, incluant l'historique des parties.
 
-You've successfully run and modified your React Native App. :partying_face:
+## 2. API en NodeJS
 
-### Now what?
+L'API développée en NodeJS sert de middleware entre l'application mobile et les bases de données MySQL et MongoDB. Elle utilise l'API de Riot pour collecter les données de jeu et les stocker dans les bases de données.
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+## 3. Application Mobile en React-Native
 
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+L'application mobile, développée en React-Native, permet aux utilisateurs de rechercher leurs pseudo/tag et d'afficher les données de jeu collectées. Elle interagit avec l'API NodeJS pour récupérer et afficher les informations pertinentes.

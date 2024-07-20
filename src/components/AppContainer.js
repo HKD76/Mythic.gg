@@ -10,9 +10,6 @@ const AppContainer = ({ children }) => {
       style={[styles.container, isDarkTheme ? styles.dark : styles.light]}
     >
       <View style={styles.content}>{children}</View>
-      <View style={styles.footer}>
-        <ThemeToggleButton />
-      </View>
     </SafeAreaView>
   );
 };

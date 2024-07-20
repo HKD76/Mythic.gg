@@ -48,21 +48,22 @@ const Dropdown = ({ isOpen, toggleDropdown, label, options, onSelect }) => {
         >
           <View
             style={[
-              tw`absolute top-[50px] w-[80%] bg-[${colors.card}] rounded-[8px]`,
+              tw`absolute top-[50px] py-[5px] bg-[${colors.globalred}] px-[8px] w-[80%] rounded-[8px]`,
               styles.modalContent,
             ]}
           >
             <FlatList
+              style={tw`rounded-[8px] `}
               data={options}
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() => handleSelect(item.value)}
-                  style={tw`p-[8px] bg-[${colors.globalred}] rounded-[8px] m-2`}
+                  style={tw`p-[8px] border-b-[1px] border-white m-0`}
                 >
                   <CustomText
                     weight="heavy"
-                    style={tw`text-[15px] text-[${colors.buttonText}]`}
+                    style={tw`text-[15px] py-[5px] text-[${colors.buttonText}]`}
                   >
                     {item.label}
                   </CustomText>

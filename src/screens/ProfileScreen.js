@@ -5,7 +5,7 @@ const ProfileScreen = ({ route }) => {
   const params = route.params || {};
   const { puuidData, profileData } = params;
   const profileIconUrl = profileData
-    ? `https://ddragon.leagueoflegends.com/cdn/14.12.1/img/profileicon/${profileData.profileIconId}.png`
+    ? `https://ddragon.leagueoflegends.com/cdn/14.14.1/img/profileicon/${profileData.profileIconId}.png`
     : null;
 
   return (

@@ -7,6 +7,8 @@ import SearchScreen from "./src/screens/SearchScreen";
 import ProfileScreen from "./src/screens/ProfileScreen";
 import AppContainer from "./src/components/AppContainer";
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
+import MatchDetailsScreen from "./src/screens/MatchDetailsScreen";
+import SettingsScreen from "./src/screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,9 +34,9 @@ const NavigationContainerWithTheme = () => {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Search" component={SearchScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="MatchDetails" component={MatchDetailsScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
